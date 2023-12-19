@@ -1,6 +1,5 @@
 import {createContext ,useContext , useEffect ,useState} from 'react'
 import { IUser } from "@/types";
-import { set } from 'firebase/database';
 import { getCurrentUser } from '@/lib/appwrite/api';
 import { useNavigate } from 'react-router-dom';
 
