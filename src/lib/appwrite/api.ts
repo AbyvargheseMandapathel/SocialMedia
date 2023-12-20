@@ -145,19 +145,21 @@ export async function uploadFile(file:File) {
 }
 
 
-export async function getFilePreview(fileId: string) {
-  try{
+export function getFilePreview(fileId: string) {
+  try {
     const fileUrl = storage.getFilePreview(
       appwriteConfig.storageId,
       fileId,
       2000,
       2000,
       "top",
-      100,
-    )
+      100
+    );
+
+    if (!fileUrl) throw Error;
 
     return fileUrl;
-  }catch(error) {
+  } catch (error) {
     console.log(error);
   }
 }
