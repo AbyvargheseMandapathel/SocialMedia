@@ -10,6 +10,8 @@ type PostCardProps = {
 const PostCard = ({post} : PostCardProps) => {
     const {user} = useUserContext();
 
+    console.log(post)
+
     if(!post.creator) return;
 
   return (
@@ -65,4 +67,4 @@ const PostCard = ({post} : PostCardProps) => {
   )
 }
 
-export default PostCard
+export default PostCard;
