@@ -207,40 +207,39 @@ export async function likePost(postId:string ,
   }
 }
 
-export async function savePost(postId:string , 
-  userId:string) {
+export async function savePost(userId: string, postId: string) {
   try {
     const updatedPost = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.savesCollectionId,
       ID.unique(),
       {
-        user:userId,
-        postId:postId,
+        user: userId,
+        post: postId,
       }
-    )
-    if(!updatedPost) throw Error;
+    );
+
+    if (!updatedPost) throw Error;
 
     return updatedPost;
-
-  }catch(error){
-    console.log(error)
+  } catch (error) {
+    console.log(error);
   }
 }
 
 
-export async function deletesavePost(savedRecordId:string) {
+export async function deleteSavedPost(savedRecordId: string) {
   try {
     const statusCode = await databases.deleteDocument(
       appwriteConfig.databaseId,
       appwriteConfig.savesCollectionId,
-      savedRecordId,
-    )
-    if(!statusCode) throw Error;
+      savedRecordId
+    );
 
-    return {status: 'ok'}
+    if (!statusCode) throw Error;
 
-  }catch(error){
-    console.log(error)
+    return { status: "Ok" };
+  } catch (error) {
+    console.log(error);
   }
 }
