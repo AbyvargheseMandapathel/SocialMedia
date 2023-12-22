@@ -16,31 +16,36 @@ import { Textarea } from "../ui/textarea"
 import FileUploader from "../shared/FileUploader"
 import { PostValidation } from "@/lib/validation"
 import { Models } from "appwrite"
-import { useCreatePost } from "@/lib/react-query/queriesandMutations"
+import { useCreatePost, useUpdatePost } from "@/lib/react-query/queriesandMutations"
 import { useUserContext } from "@/context/AuthContext"
 import { toast } from "../ui/use-toast"
+import { Toast } from "../ui/toast"
 
 
-// type PostFormProps = {
-//     post?: Models.Document;   
-// }
-
-// const PostForm = ({post}:PostFormProps) => {
 
 type PostFormProps = {
     post?: Models.Document;
+    action: 'Create' | 'Update'
     
   };
   
-  const PostForm = ({ post }: PostFormProps) => {
+  const PostForm = ({ post , action}: PostFormProps) => {
 
     // const {mutateAsync:createPost , isPending:isLoadingCreate} = 
-    const {mutateAsync:createPost , } = 
+    const {mutateAsync:createPost , isPending:isLoadingCreate} = 
 
     useCreatePost();
 
+    const {mutateAsync:updatePost ,isPending:isLoadingUpdate } = 
+
+    useUpdatePost();
+
     const {user} = useUserContext();
     const navigate = useNavigate();
+
+    const handleCancel = () => {
+      navigate('/')
+    }
 
     // 1. Define your form.
   const form = useForm<z.infer<typeof PostValidation>>({
@@ -55,6 +60,23 @@ type PostFormProps = {
  
   // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof PostValidation>) {
+
+      if(post && action ==="Update") {
+        const updatedPost = await updatePost({
+          ...values,
+          postId:post.$id,
+          imageId:post?.imageId,
+          imageUrl:post?.imageUrl
+        })
+
+        if(!updatedPost) {
+          Toast({
+            title: "Error updating post",
+          })
+        }
+        return navigate(`/posts/${post.$id}`)
+      }
+
     const newPost = await createPost({
         ...values,
         userId: user.id,
@@ -132,8 +154,13 @@ type PostFormProps = {
                 )}
                 />
                 <div className="flex gap-4 items-center justify-end">
-                    <Button type="button" className="shad-button_dark_4">Cancel</Button>
-                    <Button type="submit" className="shad-button_primary whitespace-nowrap">Submit</Button>
+                    <Button type="button" className="shad-button_dark_4" onClick={handleCancel}>Cancel</Button>
+                    <Button type="submit" className="shad-button_primary whitespace-nowrap"
+                    disabled = {isLoadingUpdate || isLoadingCreate}
+                    >
+                      {isLoadingCreate || isLoadingUpdate && "Loading..."}
+                      {action} Post
+                    </Button>
                 </div>
       </form>
       </Form>
