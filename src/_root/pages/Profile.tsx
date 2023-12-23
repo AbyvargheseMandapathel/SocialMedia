@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
-import { LikedPosts } from "@/_root/pages";
+import { LikedPosts, Saved } from "@/_root/pages";
 import { useUserContext } from "@/context/AuthContext";
 import { useGetUserById } from "@/lib/react-query/queriesandMutations";
 import Loader from "@/components/shared/Loader";
@@ -130,16 +130,17 @@ const Profile = () => {
         </div>
       )}
 
-      <Routes>
-        <Route
-          index
-          element={<GridPostList posts={currentUser.posts} showUser={false} />}
-        />
-        {currentUser.$id === user.id && (
-          <Route path="/liked-posts" element={<LikedPosts />} />
-        )}
-      </Routes>
-      <Outlet />
+<Routes>
+  <Route
+    index
+    element={<GridPostList posts={currentUser.posts} showUser={false} />}
+  />
+  {currentUser.$id === user.id && (
+    <Route path="/liked-posts" element={<LikedPosts />} />
+  )}
+</Routes>
+<Outlet />
+
     </div>
   );
 };
