@@ -10,6 +10,7 @@ import { createPost, createUserAccount , deletePost, deleteSavedPost, getCurrent
 import { QUERY_KEYS } from './queryKeys'
 
 
+
 export const useCreateUserAccount = () => {
     return useMutation(
         {
@@ -169,17 +170,19 @@ export const useDeletePost = () => {
 
 
 export const useGetPosts = () => {
-  return useInfiniteQuery( {
+  return useInfiniteQuery({
     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-    queryFn: getInfinitePosts,
-    getNextPageParam:(lastPage) => {
-      if (lastPage && lastPage.documents.length ===0)
-      return null;
-
-      const lastId = lastPage.documents[lastPage?.documents.length-1].$id;
+    queryFn: getInfinitePosts as any,
+    getNextPageParam: (lastPage: any) => {
+      if (!lastPage || lastPage.documents.length === 0) {
+        return null;
+      }
+  
+      const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
       return lastId;
-    }
-  })
+    },
+    initialPageParam: null, 
+  });
 }
 
 export const useSearchPosts = (searchTerm: string) => {
